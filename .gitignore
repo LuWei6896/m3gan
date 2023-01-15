@@ -5,3 +5,5 @@
 *.txt
 results.json
 segments_info.json
+secrets
+secrets/credentials.py
