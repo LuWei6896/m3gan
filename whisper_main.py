@@ -2,145 +2,12 @@ from whisper_module import whisper
 import csv
 import os
 import sys
-from pathlib import Path
-import pdb
-from datetime import datetime
-from authoring.author import Author
-from authoring.author_metadata import transcription_metadata
-import time
-from datetime import datetime
 import warnings
 warnings.filterwarnings("ignore")
 
 import torch
 from tqdm import tqdm
 import ffmpeg
-
-
-# Run the english only model as they do better for eng only apps
-
-# file_path = "./data/input/delta_orig.wav"
-
-
-def whisper_transcribe(file_path: str, model_name: str, ffmpeg_path:str, basedir: str):
-    """Main function to transcribe audio using chosen model and file
-
-    Args:
-        audio_file (str): _description_
-        model_name (str): _description_
-        ffmpeg_path (str): _description_
-        basedir (str): _description_
-
-    Returns:
-        result (dict): Dictionary of transcription which can be accessed as needed
-    """
-    model_name = model_name
-    print(f"File path: {file_path}\n")
-    print(f"Loading model: {model_name}...\n")
-    model = whisper.load_model_local(f"{model_name}.en", basedir ,in_memory=True)
-
-    print(f"Model loaded! Beginning transcription...\n")
-    result = model.transcribe(file_path, ffmpeg_path)
-    print(f"Transcription complete!\n")
-    return result
-
-# Redo transcribe to csv to feed in result dict
-# Then we search and check for 'segments' within, and create the list here
-
-
-def transcribe_to_csv(whisper_results: dict, output_name: str):
-    """_summary_
-    Assuming the list contains dictionaries all with the same keys
-    Then write to csv with keys as a header
-    Args:
-        whisper_results (dict): _description_
-        output_name (str): audio_file name for automatic file name creation.
-                            Should not be manual.
-    """
-    segments = whisper_results['segments']
-    if (len(segments) == None) or (len(segments) == 0):
-        print("Empty list. Please check transcription worked")
-        sys.exit()
-    if ".wav" in output_name:
-        output_name = output_name[:-4]
-        # e.g. output_name == 'result"
-    myFile = open(output_name, 'w')
-    writer = csv.writer(myFile)
-    writer.writerow(segments[0].keys())  # e.g. segments
-    for dictionary in segments:  # e.g. segment in segments
-        writer.writerow(dictionary.values())
-    myFile.close()
-    print("Transcription successfully written to file!")
-
-
-def transcribe_to_text(whisper_results: dict, output_name: str):
-    """
-    Transcribe to text
-
-    Args:
-        whisper_results (dict): Transcriped Whisper object
-        output_name (str): _description_
-    """
-    transcribed_text = whisper_results['text']
-    if (len(transcribed_text)) == None or (len(transcribed_text)) == 0:
-        print("Empty string. Check that transcription has output")
-    if ".wav" in output_name:
-        output_name = output_name[:-4]
-    with open(output_name, "w") as text_file:
-        text_file.write(transcribed_text)
-
-def transcribe_to_file(whisper_results, output_name):
-    """
-    Transcribe results to txt and csv
-
-    Args:
-        whisper_results (_type_): _description_
-        output_name (_type_): _description_
-    """
-    transcribe_to_text(whisper_results['text'], output_name)
-    transcribe_to_csv(whisper_results['segments'], output_name)
-
-
-def run_whisper(file_path, ffmpeg_path, basedir):
-    """
-    One liner function to run whisper execution
-    Can be executed standalone
-    Designed to be called within the app.py from a gui
-
-    Args:
-        filepath (str): Filepath to wav
-        ffmpeg_path (str): Filepath to ffmpeg exe
-        basedir (str): File path to model
-    """
-    model_name = "medium" # "tiny"
-    print(f"Execution started: {datetime.now()}")
-    # Transcribe audio
-    result = whisper_transcribe(file_path=file_path, model_name=model_name, ffmpeg_path=ffmpeg_path, basedir=basedir)
-    return result
-
-
-def run_whisper_main():
-    author = Author(**transcription_metadata)
-    attrs = vars(author)
-    print("".join("%s %s\n" % item for item in attrs.items()))
-
-    model_name = "medium"
-    data_path = "data/input/"
-    data_name = input("Data name: ") + ".wav"
-    file_path = data_path + data_name
-    output_path = "./transcription_results/"
-    print(f"Execution started: {datetime.now()}")
-    start_time = time.time()
-    # Transcribe audio
-    result = whisper_transcribe(audio_file=file_path, model_name=model_name)
-
-    # Export results to csv
-    transcribe_to_csv(result['segments'],
-                      output_name=data_name, output_path=output_path)
-    transcribe_to_text(
-        result['text'], output_name=data_name, output_path=output_path)
-    end_time = time.time()
-    print(f"Total execution time: {end_time - start_time} s")
 
 class Transcriber(object):
     """
@@ -453,7 +320,7 @@ class Transcriber(object):
             text_file.write(transcribed_text)
 
 if __name__ == "__main__":
-    full_audio_path = 'C:/Users/k66gu/Documents/transcription_dev/data/input/delta_10.wav'
+    full_audio_path = ''
     basedir = os.getcwd()
     AUDIO_DIR = os.path.join(basedir, "data", "input")
     VAD_DIR = os.path.join(AUDIO_DIR,"vad_chunks")
