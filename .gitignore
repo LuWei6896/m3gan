@@ -1,0 +1,7 @@
+*.pt
+*.exe
+*.wav
+*.csv
+*.txt
+results.json
+segments_info.json
