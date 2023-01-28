@@ -26,7 +26,6 @@ def tts(text: str, model_name: str, output_name: str,speaker_idx: str=None):
     Reference:
         https://huggingface.co/spaces/coqui/CoquiTTS/blob/main/app.py
     """
-    print(text, model_name)
     manager = ModelManager()
     # download model
     model_path, config_path, model_item = manager.download_model(f"tts_models/{model_name}")
@@ -46,6 +45,7 @@ def tts(text: str, model_name: str, output_name: str,speaker_idx: str=None):
     wavs = synthesizer.tts(text, speaker_idx)
 
     # return output
+    print(output_name)
     synthesizer.save_wav(wavs, output_name)
 
 if __name__ == "__main__":

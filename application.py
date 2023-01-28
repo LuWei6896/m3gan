@@ -9,6 +9,10 @@ import sounddevice as sd
 import tempfile
 import queue
 
+from chatgpt_prompt import chatgpt_response
+from transcribe_sd_record import transcribe_recording
+from cocqui_tts import tts
+
 
 from PyQt6.QtWidgets import (QMainWindow, QApplication, QLabel,
                              QPushButton)
@@ -49,10 +53,10 @@ class mainUI(QMainWindow):
 
         # Worker
         self.thread = QThread(self)
-        self.worker = Worker()
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.start)
-        self.worker.finished.connect(self.thread.quit)
+        self.recorder = Recorder()
+        self.recorder.moveToThread(self.thread)
+        self.thread.started.connect(self.recorder.start)
+        self.recorder.finished.connect(self.thread.quit)
 
         self.startButton.clicked.connect(self.start)
         self.stopButton.clicked.connect(self.stop)
@@ -62,21 +66,44 @@ class mainUI(QMainWindow):
     
     def start(self):
         if self.thread.isRunning():
-            self.worker.start()
+            self.recorder.start()
         else:
             self.thread.start()
     
     def stop(self):
         if self.thread.isRunning():
-            self.worker.stop()
+            self.recorder.stop()
+        
+        responder = Responder()
     
     def closeEvent(self, event):
-        self.worker.stop(abort=True)
+        self.recorder.stop(abort=True)
         self.thread.quit()
         self.thread.wait()
 
+class Responder(QObject):
+    """
+    Do all the ML stuff here
 
-class Worker(QObject):
+    Args:
+        QObject (_type_): _description_
+    """
+    def __init__(self):
+        text_transcribed = transcribe_recording()
+        text_response = chatgpt_response(text_transcribed)
+        print("ChatGPT responded!")
+        out_path = os.path.join(os.getcwd(), "data", "output","temp.wav")
+        tts(text_response, model_name = "en/ljspeech/vits", output_name = out_path)
+        print("Response saved!")
+
+
+class Recorder(QObject):
+    """
+    For Recording
+
+    Args:
+        QObject (_type_): _description_
+    """
     finished = pyqtSignal()
 
     def __init__(self):
@@ -116,14 +143,11 @@ class Worker(QObject):
             print(f"\n{device_info}")
             samplerate = int(device_info['default_samplerate'])
             print(f"\n{samplerate}")
-            temp_fname = tempfile.mktemp(prefix='delme_', suffix='.wav', dir='./data/temp')
+            temp_fname = tempfile.mktemp(prefix='delme_', suffix='.wav', dir='./data/input')
 
             with sf.SoundFile(temp_fname, mode='x', samplerate=samplerate,
                         channels=channels) as file:
                 with sd.InputStream(samplerate=samplerate, channels=channels, callback=self.callback):
-                    print('#' * 80)
-                    print('press Ctrl+C to stop the recording')
-                    print('#' * 80)
                     while not(self._paused):
                         file.write(self.q.get())
 
