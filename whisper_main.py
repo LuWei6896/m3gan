@@ -9,11 +9,18 @@ import torch
 from tqdm import tqdm
 import ffmpeg
 
-class Transcriber(object):
+from PyQt6.QtCore import * 
+
+class Transcriber(QObject):
     """
     This class implements a new VAD ontop of Whisper Transcriber
+    Turned into a QT class for threading and progress bar emission
     """
+    
+    progress = pyqtSignal(int)
+
     def __init__(self, *args, **kwargs):
+        super().__init__()
         self.VAD_THRESHOLD = 0.4 # Confidence threshold for VAD speech vs non-speech
         self.VAD_SR = 16000 # Sample rate to resample to
         self.head = 3200 # 0.2s head for padding chunks
@@ -232,25 +239,52 @@ class Transcriber(object):
             output_checker (bool): Default 1 is True to show CSV, 0 for Text output
 
         """
+        self.pbar = 0
+        self.progress.emit(self.pbar)
+
         self._vad_dir_creator()
+        self.pbar += 1
+        self.progress.emit(self.pbar)
         print("vad_dir_creator executed!")
+
         self._create_temp_audio(ffmpeg_path)
+        self.pbar += 1
+        self.progress.emit(self.pbar)
         print("_create_temp_audio executed!")
+
         self._load_vad()
+        self.pbar += 1
+        self.progress.emit(self.pbar)
         print("_load_vad executed!")
+
         self._read_audio(ffmpeg_path)
+        self.pbar += 1
+        self.progress.emit(self.pbar)
         print("_read_audio executed!")
+
         self._process_timestamps()
+        self.pbar += 1
+        self.progress.emit(self.pbar)
         print("_process_timestamps executed!")
+
         self._split_audio()
+        self.pbar += 1
+        self.progress.emit(self.pbar)
         print("_split_audio executed!")
+
         self._merge_chunks()
+        self.pbar += 1
+        self.progress.emit(self.pbar)
         print("_merge_chunks executed!")
 
         self._convert_timestamps_seconds()
+        self.pbar += 1
+        self.progress.emit(self.pbar)
         print("_convert_timestamps executed!")
 
         self._whisper_on_chunks(ffmpeg_path = ffmpeg_path, basedir = basedir, output_checker=output_checker)
+        self.pbar += 1
+        self.progress.emit(self.pbar)
         print("_whisper_on_chunks executed!")
 
 
@@ -264,9 +298,13 @@ class Transcriber(object):
         """
         if output_checker == 1:
             segment_info = self.segment_info
+            self.pbar += 1
+            self.progress.emit(self.pbar)
             return segment_info
         elif output_checker == 0:
             text_info = self.text_info
+            self.pbar += 1
+            self.progress.emit(self.pbar)
             return text_info
         else:
             print("No valid output selected")
@@ -296,6 +334,8 @@ class Transcriber(object):
         for dictionary in segments:  # e.g. segment in segments
             writer.writerow(dictionary.values())
         myFile.close()
+        self.pbar += 1
+        self.progress.emit(self.pbar)
         print("Transcription successfully written to file!")
 
 
@@ -318,6 +358,8 @@ class Transcriber(object):
             output_name = output_name[:-4]
         with open(output_name, "w") as text_file:
             text_file.write(transcribed_text)
+            self.pbar += 1
+            self.progress.emit(self.pbar)
 
 if __name__ == "__main__":
     full_audio_path = ''
