@@ -1,0 +1,18 @@
+QPushButton#startButton, QPushButton#stopButton {
+    background-color:"#386890";
+    color: "gold";
+    border: 1px;
+    border-color: "gold";
+    border-radius: 5px;
+    border-style: inset;
+}
+
+QPushButton#startButton:hover, QPushButton#stopButton:hover {
+    background-color:"#4682B4";
+    border-style: inset;
+}
+
+QPushButton#startButton:pressed, QPushButton#stopButton:pressed {
+    background-color: "#4682B4";
+    border-style: inset;
+}
