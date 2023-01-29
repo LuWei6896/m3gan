@@ -17,8 +17,12 @@ from cocqui_tts import tts
 
 from PyQt6.QtWidgets import (QMainWindow, QApplication, QLabel, 
                              QPushButton, QTextEdit)
+from PyQt6.QtGui import QAction
 from PyQt6 import uic
 from PyQt6.QtCore import *
+
+from dialogs import aboutDialog, helpDialog
+
 
 def except_hook(cls, exception, traceback):
     """
@@ -46,6 +50,13 @@ class mainUI(QMainWindow):
         ui_dir = os.path.join(basedir, 'ui', 'mainWindow.ui')
         
         uic.loadUi(ui_dir, self)
+
+        # Menu bar
+        self.about = self.findChild(QAction, 'actionAbout')
+        self.about.triggered.connect(self.__open_about_window)
+
+        self.help = self.findChild(QAction, 'actionHelp')
+        self.help.triggered.connect(self.__open_help_window)
 
         self.startButton = self.findChild(QPushButton, 'startButton')
         self.stopButton = self.findChild(QPushButton, 'stopButton')
@@ -111,6 +122,20 @@ class mainUI(QMainWindow):
     def __responder_text_output(self, value):
         self.outputText = self.findChild(QTextEdit, 'textEditOutput')
         self.outputText.insertPlainText(value)
+    
+    def __open_about_window(self):
+        """
+        Open the About Dialog Window that contains program metadata
+        """
+        aboutWindow = aboutDialog()
+        aboutWindow.exec()
+
+    def __open_help_window(self):
+        """
+        Open the Help Dialog Window that will display the readme
+        """
+        helpWindow = helpDialog()
+        helpWindow.exec()
 
 class Responder(QObject):
     """
