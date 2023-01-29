@@ -1,18 +1,68 @@
-QPushButton#startButton, QPushButton#stopButton {
-    background-color:"#386890";
+QMainWindow, QDialog {
+    background-color: "#3c3d5d";
+}
+
+QLabel#appMetaDataLabel, QLabel#copyrightClogo {
+    color:"gold";
+}
+
+QLabel#titleLabel {
     color: "gold";
-    border: 1px;
-    border-color: "gold";
+    font-size: 14px;
+    font: bold;
+    text-transform: uppercase;
+}
+
+/** +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+QMenuBar {
+    background-color: "dimgray";
+    font: bold;
+    color: white;  
+}
+QMenuBar::item {
+    spacing: 10px;           
+    padding: 2px 10px;
+}
+QMenuBar::item:selected {    
+    background-color: "#4682B4";
+}
+QMenuBar::item:pressed {
+    background: "#4682B4";
+}
+
+QMenu {
+    background-color: "dimgray";   
+    border: 1px solid "white";
+    margin: 2px;
+    font: bold;
+    color: white;
+}
+QMenu::item {
+    background-color: transparent;
+}
+QMenu::item:selected { 
+    background-color: "#4682B4";
+    color: white;
+}
+
+/** +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+QPushButton#startButton, QPushButton#stopButton {
+    background-color:"#507da4";
+    color: "gold";
+    border: 2px;
+    border-color: "#85b9cf";
     border-radius: 5px;
     border-style: inset;
 }
 
 QPushButton#startButton:hover, QPushButton#stopButton:hover {
-    background-color:"#4682B4";
+    background-color:"#85b9cf";
     border-style: inset;
 }
 
 QPushButton#startButton:pressed, QPushButton#stopButton:pressed {
-    background-color: "#4682B4";
+    background-color: "#85b9cf";
     border-style: inset;
 }

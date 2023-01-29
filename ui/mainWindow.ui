@@ -107,6 +107,12 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>40</height>
+    </size>
+   </property>
    <widget class="QMenu" name="menu_Info">
     <property name="title">
      <string>&amp;Info</string>
@@ -115,6 +121,11 @@
     <addaction name="actionHelp"/>
    </widget>
    <widget class="QMenu" name="menuHistory">
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
     <property name="title">
      <string>History</string>
     </property>
@@ -127,10 +138,24 @@
    <property name="text">
     <string>About</string>
    </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+
+    </font>
+   </property>
   </action>
   <action name="actionHelp">
    <property name="text">
     <string>Help</string>
+   </property>
+      <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+
+    </font>
    </property>
   </action>
  </widget>
