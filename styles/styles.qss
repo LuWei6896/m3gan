@@ -1,13 +1,13 @@
 QMainWindow, QDialog {
-    background-color: "#3c3d5d";
+    background-color: "#8B7F8B";
 }
 
 QLabel#appMetaDataLabel, QLabel#copyrightClogo {
-    color:"gold";
+    color:"#E8D8D7";
 }
 
 QLabel#titleLabel {
-    color: "gold";
+    color: "#E8D8D7";
     font-size: 14px;
     font: bold;
     text-transform: uppercase;
@@ -49,8 +49,8 @@ QMenu::item:selected {
 /** +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
 QPushButton#startButton, QPushButton#stopButton {
-    background-color:"#507da4";
-    color: "gold";
+    background-color:"#DAC1C2";
+    color: "#A392A2";
     border: 2px;
     border-color: "#85b9cf";
     border-radius: 5px;
@@ -58,11 +58,20 @@ QPushButton#startButton, QPushButton#stopButton {
 }
 
 QPushButton#startButton:hover, QPushButton#stopButton:hover {
-    background-color:"#85b9cf";
+    background-color:"#D7CDD5";
     border-style: inset;
 }
 
 QPushButton#startButton:pressed, QPushButton#stopButton:pressed {
-    background-color: "#85b9cf";
+    background-color: "#D7CDD5";
     border-style: inset;
+}
+
+QTextEdit {
+    font-family: "MS Shell Dlg 2"; 
+    font-size: 8.25pt; 
+    font-weight: 400; 
+    font-style: normal;
+    background-color: "#F2EEED";
+    border-radius: 10px;
 }
